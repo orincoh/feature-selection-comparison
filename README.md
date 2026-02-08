@@ -47,10 +47,12 @@ What was found (see the PDF for full tables):
 
 ---
 
-## Setup & run
+## Run
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python src/main.py
+python main.py
+
+Note: the CSV files (Mobile_Price.csv, mushrooms.csv, zoo.csv) should be located in the repository root.
