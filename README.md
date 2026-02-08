@@ -1,83 +1,56 @@
-# Feature Selection Methods — Empirical Comparison (Filter / Wrapper / Hybrid)
+# Feature Selection Methods – Comparative Study
 
-This project empirically compares **filter**, **wrapper**, and **hybrid** feature selection approaches on multiple classification datasets.
-All methods are evaluated with a **Random Forest** classifier and tuned using **RandomizedSearchCV** to maximize **F1-macro**.
+A small empirical study comparing filter, wrapper and hybrid feature selection methods on several classification datasets.
+All methods are evaluated with the same setup: Random Forest + RandomizedSearchCV (F1-macro).
 
-Author: Orin Cohen  
+By: Orin Cohen  
 Course: Selected Topics in Learning Systems (M.Sc.)
 
 ---
 
-## Methods Compared
+## Summary
 
-### Filter methods
-- Mutual Information (MI)
-- Symmetrical Uncertainty (SU)
-- ReliefF
-- ANOVA F-test (continuous datasets only)
-- Chi-Square (categorical datasets only)
+What’s in the project:
+- Compare multiple FS strategies (filter / wrapper / hybrid) under consistent conditions.
+- Report F1/Recall/Precision (macro) and runtime.
+- Generate feature-importance plots per dataset and method.
 
-Filter methods select features using a **log2(n)** heuristic (n = number of features).
-
-### Wrapper methods
-- RFECV (Recursive Feature Elimination with CV)
-- SFS (Sequential Forward Selection)
-- Backward Elimination
-
-Wrappers optimize feature subsets based on Random Forest performance using **F1-macro**.
-
-### Hybrid methods
-- Hybrid 1: Filter (MI) ➜ Wrapper (RFECV)
-- Hybrid 2: Weighted combination of MI + RF feature importance (embedded)
+What was found (see the PDF for full tables):
+- There isn’t one method that wins on every dataset.
+- Wrapper/hybrid methods can be a bit better on some datasets, but they’re much slower.
+- On the Mobile dataset, the hybrid approach performed worse than filter/wrapper.
+- On simple low-dimensional data (Iris), most approaches look very similar.
 
 ---
 
-## Datasets
+## Repository contents
 
-Six benchmark datasets were used with diverse characteristics (numeric / categorical / mixed and binary / multiclass):
-- Breast Cancer Wisconsin (Diagnostic) (scikit-learn)
-- Iris (scikit-learn)
-- Wine (scikit-learn)
-- Mobile Price Classification (CSV)
-- Mushrooms (CSV, one-hot encoded)
-- Zoo (CSV, one-hot encoded)
+- `src/main.py`  
+  Full pipeline: load data → feature selection → model tuning → evaluation → plots.
 
-Train/test split: **80% / 20% stratified**.  
-For Mushrooms and Zoo, one-hot encoding is applied **after the split** to prevent leakage.
+- `data/`  
+  CSV datasets included here:
+  - `Mobile_Price.csv`
+  - `mushrooms.csv`
+  - `zoo.csv`  
+  Breast Cancer, Iris and Wine are loaded via `scikit-learn` (see the report).
 
----
+- `results/` (optional)  
+  Saved artifacts from runs.  
+  The code currently reads/writes `feature_selection_results.json`.
 
-## Experimental Setup
+- `plots/`  
+  Generated plots (created when running the code).
 
-- Model: RandomForestClassifier (class_weight='balanced')
-- Tuning: RandomizedSearchCV, scoring = **f1_macro**
-- Metrics reported on test set: **F1-macro, Recall-macro, Precision-macro**
-- Fixed random seed: **42** for reproducibility
-
----
-
-## Results (high-level)
-
-Overall, there is **no single best feature selection approach** across all datasets.
-Wrappers and hybrids can achieve higher performance but may require substantially longer runtime (especially on larger datasets).
-
-For detailed tables (per method, per dataset) see the included PDF report.
+- `Feature Selection Methods Project Orin Cohen.pdf`  
+  Full report (methods, tables, discussion).
 
 ---
 
-## Repository Structure
+## Setup & run
 
-- `src/main.py` — full pipeline: data prep ➜ feature selection ➜ RF training/tuning ➜ metrics ➜ plots
-- `data/` — CSV datasets used in the project
-- `results/feature_selection_results.json` — selected feature sets per dataset and method (optional to commit)
-- `plots/` — generated feature-importance plots (created automatically)
-
----
-
-## How to Run
-
-### 1) Create environment & install dependencies
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+python src/main.py
